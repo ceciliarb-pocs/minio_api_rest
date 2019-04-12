@@ -24,7 +24,7 @@ return [
     |
     */
 
-    'default' => 'local',
+    'default' => 'minio',
 
     /*
     |--------------------------------------------------------------------------
@@ -55,6 +55,19 @@ return [
             // 'pirate'          => false,
             // 'eventable'       => true,
             // 'cache'           => 'foo'
+        ],
+        'minio' => [
+            'driver'        => 'awss3',
+            'key'           => env('MINIO_KEY'),
+            'secret'        => env('MINIO_SECRET'),
+            'bucket'        => env('MINIO_BUCKET'),
+            'region'        => env('MINIO_REGION', ""),
+            'version'       => 'latest',
+            'endpoint'      => env('MINIO_ENDPOINT', 'http://127.0.0.1:9005'),
+            'use_path_style_endpoint' => true,
+            'options' => [
+                'override_visibility_on_copy' => 'private',
+            ]
         ],
 
         'azure' => [

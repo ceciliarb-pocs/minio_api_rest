@@ -17,4 +17,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/uploadHelloWorld', 'ObjectController@uploadObj');
+Route::post('/uploadStorage', 'ObjectController@uploadFileStorage');
+Route::get('/getStorage', 'ObjectController@getFileStorage');
+Route::get('/getUrlStorage', 'ObjectController@getUrlFileStorage');
+Route::get('/downloadStorage', 'ObjectController@downloadFileStorage');
+Route::delete('/deleteStorage', 'ObjectController@deleteFileStorage');
+
+Route::get('/arquivos/{id?}/{modo?}', 'ObjectController@getObjAws');
+Route::post('/arquivos', 'ObjectController@putObjAws');
+Route::delete('/arquivos/{id}', 'ObjectController@deleteObjAws');
