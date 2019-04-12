@@ -175,17 +175,23 @@ class ObjectController extends Controller
     public function getObjAws(Request $request) {
         $request->validate(['nome_arquivo' => 'required|string']);
         $nome     = $request->nome_arquivo;
+        $modo     = $request->modo;
 
         try {
-            $r = fopen('php://temp/', 'wb');
-            $e = new \GuzzleHttp\Psr7\Stream($r);
-            // Save object to a file.
-            self::$clientS3->getObject([
-                'Bucket' => self::$key,
-                'Key'    => $nome,
-                'SaveAs' => $e
-            ]);
-            return $e;
+            if($modo === "url") {
+                return self::$clientS3->getObjectUrl(self::$key, $nome);
+
+            } else {
+                $r = fopen('php://temp/', 'wb');
+                $e = new \GuzzleHttp\Psr7\Stream($r);
+                // Save object to a file.
+                self::$clientS3->getObject([
+                    'Bucket' => self::$key,
+                    'Key'    => $nome,
+                    'SaveAs' => $e
+                ]);
+                return $e;
+            }
         } catch (S3Exception $e) {
             throw new \Exception($e->getMessage() . "\n", 412);
         } catch (\Exception $e) {
@@ -193,9 +199,19 @@ class ObjectController extends Controller
         }
     }
 
-    public function getUrlAws(Request $request) {
-        $request->validate(['nome_arquivo' => 'required|string']);
-        $nome     = $request->nome_arquivo;
-        $s3Client->getObjectUrl('my-bucket', 'my-key');
+    public function deleteObjAws($nome_arquivo) {
+        try {
+            return self::$clientS3->deleteObject([
+                'Bucket' => self::$key,
+                'Key'    => $nome_arquivo,
+            ]);
+        } catch (S3Exception $e) {
+            throw new \Exception($e->getMessage() . "\n", 412);
+        } catch (\Exception $e) {
+            throw new \Exception("Error Processing Request", 412);
+        }
+
     }
+
+
 }
